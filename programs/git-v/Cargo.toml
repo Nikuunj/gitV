@@ -1,7 +1,7 @@
 [package]
 name = "git-v"
 version = "0.1.0"
-description = "Created with Anchor"
+description = "Secure your bounty"
 edition = "2021"
 
 [lib]
@@ -14,15 +14,15 @@ cpi = ["no-entrypoint"]
 no-entrypoint = []
 no-idl = []
 no-log-ix-name = []
-idl-build = ["anchor-lang/idl-build"]
+idl-build = ["anchor-lang/idl-build", "switchboard-on-demand/idl-build"]
 anchor-debug = []
 custom-heap = []
 custom-panic = []
 
 
 [dependencies]
-anchor-lang = "0.32.1"
-
+anchor-lang = { version = "0.32.1" , features = ["init-if-needed"] }
+switchboard-on-demand = { version = "0.12.1", features = ["anchor", "devnet"] }
 
 [lints.rust]
 unexpected_cfgs = { level = "warn", check-cfg = ['cfg(target_os, values("solana"))'] }
