@@ -1,10 +1,10 @@
 use anchor_lang::prelude::*;
 use anchor_spl::{associated_token::AssociatedToken, token_interface::{Mint, TokenAccount, TokenInterface}};
 
-use crate::{drive_accounts, ConfigIssue};
+use crate::{ ConfigIssue};
 
 #[derive(Accounts)]
-#[instruction(username: Vec<u8>, reponame: Vec<u8>)]
+#[instruction(username: Vec<u8>, repo_name: Vec<u8>, issue_number: u32)]
 pub struct CreateIssue<'info> {
     #[account(mut)]
     pub owner: Signer<'info>,
@@ -17,7 +17,12 @@ pub struct CreateIssue<'info> {
         init,
         payer = owner,
         space = ConfigIssue::INIT_SPACE + ConfigIssue::DISCRIMINATOR.len(),
-        seeds = [b"config", owner.key().as_ref(), &username, &reponame],
+        seeds = [
+            b"config", 
+            owner.key().as_ref(), 
+            &username, &repo_name, 
+            &issue_number.to_le_bytes()
+        ],
         bump
     )]
     pub config_account: Account<'info, ConfigIssue>,
@@ -38,7 +43,7 @@ pub struct CreateIssue<'info> {
         associated_token::token_program = token_program
         
     )]
-    pub issue_ata: InterfaceAccount<'info, TokenAccount>,
+    pub config_ata: InterfaceAccount<'info, TokenAccount>,
 
     pub associated_token_program: Program<'info, AssociatedToken>,
     pub token_program: Interface<'info, TokenInterface>,
